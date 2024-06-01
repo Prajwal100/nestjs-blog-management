@@ -9,11 +9,22 @@ import { PostModule } from './post/post.module';
 import { TagModule } from './tag/tag.module';
 import { CategoryModule } from './category/category.module';
 import { AuthModule } from './auth/auth.module';
-import { AuthModule } from './auth/auth.module';
-import { UserModule } from './user/user.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [DatabaseModule, GraphqlModule, UserModule, AuthModule, CategoryModule, TagModule, PostModule, CommnetModule],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    DatabaseModule,
+    GraphqlModule,
+    UserModule,
+    AuthModule,
+    CategoryModule,
+    TagModule,
+    PostModule,
+    CommnetModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

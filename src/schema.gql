@@ -1,0 +1,126 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type User {
+  id: Int!
+  name: String!
+  email: String!
+  avatar: String
+  role: String!
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Commnet {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+type Post {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+type Tag {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+type Category {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+type Query {
+  user(id: Int!): User!
+  category(id: Int!): Category!
+  tag(id: Int!): Tag!
+  post(id: Int!): Post!
+  commnet(id: Int!): Commnet!
+}
+
+type Mutation {
+  createUser(createUserInput: CreateUserInput!): User!
+  updateUser(updateUserInput: UpdateUserInput!): User!
+  removeUser(id: Int!): User!
+  login(email: String!, password: String!): String!
+  createCategory(createCategoryInput: CreateCategoryInput!): Category!
+  updateCategory(updateCategoryInput: UpdateCategoryInput!): Category!
+  removeCategory(id: Int!): Category!
+  createTag(createTagInput: CreateTagInput!): Tag!
+  updateTag(updateTagInput: UpdateTagInput!): Tag!
+  removeTag(id: Int!): Tag!
+  createPost(createPostInput: CreatePostInput!): Post!
+  updatePost(updatePostInput: UpdatePostInput!): Post!
+  removePost(id: Int!): Post!
+  createCommnet(createCommnetInput: CreateCommnetInput!): Commnet!
+  updateCommnet(updateCommnetInput: UpdateCommnetInput!): Commnet!
+  removeCommnet(id: Int!): Commnet!
+}
+
+input CreateUserInput {
+  name: String!
+  email: String!
+  password: String!
+  avatar: String
+  role: String!
+}
+
+input UpdateUserInput {
+  name: String
+  email: String
+  password: String
+  avatar: String
+  role: String
+  id: Int!
+}
+
+input CreateCategoryInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateCategoryInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreateTagInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateTagInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreatePostInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdatePostInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreateCommnetInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateCommnetInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
