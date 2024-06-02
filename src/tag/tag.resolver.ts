@@ -13,7 +13,7 @@ export class TagResolver {
     return this.tagService.create(createTagInput);
   }
 
-  @Query(() => [Tag], { name: 'tag' })
+  @Query(() => [Tag], { name: 'tags' })
   findAll() {
     return this.tagService.findAll();
   }
@@ -24,12 +24,16 @@ export class TagResolver {
   }
 
   @Mutation(() => Tag)
-  updateTag(@Args('updateTagInput') updateTagInput: UpdateTagInput) {
-    return this.tagService.update(updateTagInput.id, updateTagInput);
+  async updateTag(
+    @Args('id', { type: () => Int }) id: number,
+    @Args('updateTagInput') updateTagInput: UpdateTagInput,
+  ) {
+    return await this.tagService.update(id, updateTagInput);
   }
 
-  @Mutation(() => Tag)
-  removeTag(@Args('id', { type: () => Int }) id: number) {
-    return this.tagService.remove(id);
+  @Mutation(() => Boolean)
+  async removeTag(@Args('id', { type: () => Int }) id: number) {
+    await this.tagService.remove(id);
+    return true;
   }
 }

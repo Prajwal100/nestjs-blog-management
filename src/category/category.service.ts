@@ -21,11 +21,9 @@ export class CategoryService {
   ) {}
   async create(createCategoryInput: CreateCategoryInput, image: FileUpload) {
     let imagePath: string;
-    console.log({ image });
     if (image) {
       try {
         imagePath = await this.saveImage(image);
-        console.log({ imagePath });
       } catch (error) {
         throw new InternalServerErrorException('Failed to save image');
       }

@@ -28,8 +28,17 @@ type Post {
 }
 
 type Tag {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  id: Int!
+  name: String!
+  slug: String!
+  status: STATUS!
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+enum STATUS {
+  ACTIVE
+  INACTIVE
 }
 
 type Category {
@@ -42,16 +51,12 @@ type Category {
   updatedAt: DateTime
 }
 
-enum STATUS {
-  ACTIVE
-  INACTIVE
-}
-
 type Query {
   users: [User!]!
   user(id: Int!): User!
   categories: [Category!]!
   category(id: Int!): Category!
+  tags: [Tag!]!
   tag(id: Int!): Tag!
   post(id: Int!): Post!
   commnet(id: Int!): Commnet!
@@ -66,8 +71,8 @@ type Mutation {
   updateCategory(id: Int!, updateCategoryInput: UpdateCategoryInput!, image: Upload): Category!
   removeCategory(id: Int!): Boolean!
   createTag(createTagInput: CreateTagInput!): Tag!
-  updateTag(updateTagInput: UpdateTagInput!): Tag!
-  removeTag(id: Int!): Tag!
+  updateTag(id: Int!, updateTagInput: UpdateTagInput!): Tag!
+  removeTag(id: Int!): Boolean!
   createPost(createPostInput: CreatePostInput!): Post!
   updatePost(updatePostInput: UpdatePostInput!): Post!
   removePost(id: Int!): Post!
@@ -108,14 +113,13 @@ input UpdateCategoryInput {
 }
 
 input CreateTagInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  name: String!
+  status: STATUS!
 }
 
 input UpdateTagInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
+  name: String
+  status: STATUS
 }
 
 input CreatePostInput {
