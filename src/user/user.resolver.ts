@@ -7,6 +7,7 @@ import { Roles } from 'src/common/decorators/roles.decorator';
 import { Role } from 'src/common/enums/role.enum';
 import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth-guard';
+import { RolesGuard } from 'src/common/guards/roles.guard';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -17,16 +18,16 @@ export class UserResolver {
     return this.userService.create(createUserInput);
   }
 
-  @Query(() => [User], { name: 'user' })
-  @Roles(Role.ADMIN)
+  @Query(() => [User], { name: 'users' })
+  @Roles(Role.USER,Role.ADMIN)
   @UseGuards(JwtAuthGuard)
-  findAll() {
+  findAll():Promise<User[]> {
     return this.userService.findAll();
   }
 
   @Query(() => User, { name: 'user' })
-  @Roles(Role.USER, Role.ADMIN)
-  @UseGuards(JwtAuthGuard)
+  @Roles(Role.USER,Role.ADMIN)
+  @UseGuards(JwtAuthGuard,RolesGuard)
   findOne(@Args('id', { type: () => Int }) id: number) {
     return this.userService.findOne(id);
   }

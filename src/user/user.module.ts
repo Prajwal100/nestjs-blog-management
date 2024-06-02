@@ -11,10 +11,6 @@ import { RolesGuard } from 'src/common/guards/roles.guard';
   providers: [
     UserResolver,
     UserService,
-    {
-      provide: APP_GUARD,
-      useClass: RolesGuard,
-    },
   ],
   exports: [UserService],
 })

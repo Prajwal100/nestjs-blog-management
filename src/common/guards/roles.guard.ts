@@ -8,7 +8,7 @@ import { GqlExecutionContext } from '@nestjs/graphql';
 export class RolesGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
 
-  canActivate(context: ExecutionContext): boolean {
+  async canActivate(context: ExecutionContext): Promise<boolean> {
     const requiredRoles = this.reflector.getAllAndOverride<Role[]>(ROLES_KEY, [
       context.getHandler(),
       context.getClass(),
@@ -19,6 +19,7 @@ export class RolesGuard implements CanActivate {
     }
 
     const ctx = GqlExecutionContext.create(context);
+
     const { user } = ctx.getContext().req;
     return requiredRoles.some((role) => user.role?.includes(role));
   }

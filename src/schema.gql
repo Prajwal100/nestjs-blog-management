@@ -38,6 +38,7 @@ type Category {
 }
 
 type Query {
+  users: [User!]!
   user(id: Int!): User!
   category(id: Int!): Category!
   tag(id: Int!): Tag!
@@ -47,8 +48,8 @@ type Query {
 
 type Mutation {
   createUser(createUserInput: CreateUserInput!): User!
-  updateUser(updateUserInput: UpdateUserInput!): User!
-  removeUser(id: Int!): User!
+  updateUser(id: Int!, updateUserInput: UpdateUserInput!): User!
+  removeUser(id: Int!): Boolean!
   login(email: String!, password: String!): String!
   createCategory(createCategoryInput: CreateCategoryInput!): Category!
   updateCategory(updateCategoryInput: UpdateCategoryInput!): Category!
@@ -78,7 +79,6 @@ input UpdateUserInput {
   password: String
   avatar: String
   role: String
-  id: Int!
 }
 
 input CreateCategoryInput {
