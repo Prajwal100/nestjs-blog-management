@@ -33,13 +33,24 @@ type Tag {
 }
 
 type Category {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  id: Int!
+  name: String!
+  slug: String!
+  icon: String!
+  status: STATUS!
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+enum STATUS {
+  ACTIVE
+  INACTIVE
 }
 
 type Query {
   users: [User!]!
   user(id: Int!): User!
+  categories: [Category!]!
   category(id: Int!): Category!
   tag(id: Int!): Tag!
   post(id: Int!): Post!
@@ -52,8 +63,8 @@ type Mutation {
   removeUser(id: Int!): Boolean!
   login(email: String!, password: String!): String!
   createCategory(createCategoryInput: CreateCategoryInput!): Category!
-  updateCategory(updateCategoryInput: UpdateCategoryInput!): Category!
-  removeCategory(id: Int!): Category!
+  updateCategory(id: Int!, updateCategoryInput: UpdateCategoryInput!): Category!
+  removeCategory(id: Int!): Boolean!
   createTag(createTagInput: CreateTagInput!): Tag!
   updateTag(updateTagInput: UpdateTagInput!): Tag!
   removeTag(id: Int!): Tag!
@@ -82,14 +93,15 @@ input UpdateUserInput {
 }
 
 input CreateCategoryInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  name: String!
+  status: STATUS!
+  icon: String
 }
 
 input UpdateCategoryInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
+  name: String
+  status: STATUS
+  icon: String
 }
 
 input CreateTagInput {
