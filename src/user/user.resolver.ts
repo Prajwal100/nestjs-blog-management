@@ -14,36 +14,43 @@ export class UserResolver {
   constructor(private readonly userService: UserService) {}
 
   @Mutation(() => User)
-  createUser(@Args('createUserInput') createUserInput: CreateUserInput) {
-    return this.userService.create(createUserInput);
+  @Roles(Role.USER, Role.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  async createUser(@Args('createUserInput') createUserInput: CreateUserInput) {
+    return await this.userService.create(createUserInput);
   }
 
   @Query(() => [User], { name: 'users' })
-  @Roles(Role.USER,Role.ADMIN)
-  @UseGuards(JwtAuthGuard)
-  findAll():Promise<User[]> {
-    return this.userService.findAll();
+  @Roles(Role.USER, Role.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  async findAll(): Promise<User[]> {
+    return await this.userService.findAll();
   }
 
   @Query(() => User, { name: 'user' })
-  @Roles(Role.USER,Role.ADMIN)
-  @UseGuards(JwtAuthGuard,RolesGuard)
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.userService.findOne(id);
+  @Roles(Role.USER, Role.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  async findOne(@Args('id', { type: () => Int }) id: number) {
+    return await this.userService.findOne(id);
   }
 
   @Mutation(() => User)
-  @Roles(Role.ADMIN)
-  @UseGuards(JwtAuthGuard)
-  updateUser(@Args('updateUserInput') updateUserInput: UpdateUserInput) {
-    return this.userService.update(updateUserInput.id, updateUserInput);
+  @Roles(Role.USER, Role.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  async updateUser(
+    @Args('id', { type: () => Int }) id: number,
+    @Args('updateUserInput') updateUserInput: UpdateUserInput,
+  ) {
+    return await this.userService.update(id, updateUserInput);
   }
 
-  @Mutation(() => User)
-  @Roles(Role.ADMIN)
-  @UseGuards(JwtAuthGuard)
-  removeUser(@Args('id', { type: () => Int }) id: number) {
-    this.userService.remove(id);
+  @Mutation(() => Boolean)
+  @Roles(Role.USER, Role.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  async removeUser(
+    @Args('id', { type: () => Int }) id: number,
+  ): Promise<boolean> {
+    await this.userService.remove(id);
     return true;
   }
 }

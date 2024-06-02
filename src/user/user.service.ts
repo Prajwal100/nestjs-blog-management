@@ -1,4 +1,8 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -21,15 +25,15 @@ export class UserService {
     if (existingUser) {
       throw new ConflictException('This email is already exists.');
     }
-    const user = this.userRepository.create(createUserInput);
-    return this.userRepository.save(user);
+    const user = await this.userRepository.create(createUserInput);
+    return await this.userRepository.save(user);
   }
 
-  findAll(): Promise<User[]> {
+  async findAll(): Promise<User[]> {
     return this.userRepository.find();
   }
 
-  findOne(id: number) {
+  async findOne(id: number) {
     return this.userRepository.findOne({
       where: {
         id,
@@ -37,8 +41,8 @@ export class UserService {
     });
   }
 
-  findOneByEmail(email: string): Promise<User> {
-    return this.userRepository.findOne({
+  async findOneByEmail(email: string): Promise<User> {
+    return await this.userRepository.findOne({
       where: {
         email,
       },
@@ -46,6 +50,10 @@ export class UserService {
   }
 
   async update(id: number, updateUserInput: UpdateUserInput): Promise<User> {
+    const user = await this.findOne(id);
+    if (!user) {
+      throw new NotFoundException('User not found.');
+    }
     await this.userRepository.update(id, updateUserInput);
     return this.findOne(id);
   }

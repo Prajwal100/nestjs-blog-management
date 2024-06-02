@@ -1,4 +1,4 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { ROLES_KEY } from '../decorators/roles.decorator';
 import { Role } from '../enums/role.enum';
@@ -14,13 +14,17 @@ export class RolesGuard implements CanActivate {
       context.getClass(),
     ]);
 
-    if (!requiredRoles) {
-      return true;
+    if (!requiredRoles || requiredRoles.length === 0) {
+      return true; // No role requirements specified, allow access
     }
 
     const ctx = GqlExecutionContext.create(context);
-
     const { user } = ctx.getContext().req;
-    return requiredRoles.some((role) => user.role?.includes(role));
+
+    if (!user || !user.role) {
+      throw new UnauthorizedException('User role not provided');
+    }
+
+    return requiredRoles.some((role) => user.role.includes(role));
   }
 }
