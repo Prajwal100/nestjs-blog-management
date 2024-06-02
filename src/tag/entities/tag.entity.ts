@@ -1,9 +1,11 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { STATUS } from 'src/common/constants';
+import { Post } from 'src/post/entities/post.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -30,6 +32,10 @@ export class Tag {
     default: STATUS.ACTIVE,
   })
   status: STATUS;
+
+  @Field(() => [Post], { nullable: true })
+  @ManyToMany(() => Post, (post) => post.tags)
+  posts: Post[];
 
   @Field(() => Date, { nullable: true })
   @CreateDateColumn({

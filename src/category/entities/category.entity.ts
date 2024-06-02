@@ -1,9 +1,11 @@
 import { ObjectType, Field, Int, registerEnumType } from '@nestjs/graphql';
 import { STATUS } from 'src/common/constants';
+import { Post } from 'src/post/entities/post.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -37,6 +39,10 @@ export class Category {
     default: STATUS.ACTIVE,
   })
   status: STATUS;
+
+  @Field(() => [Post], { nullable: true })
+  @OneToMany(() => Post, (post) => post.category)
+  posts?: Post[];
 
   @Field(() => Date, { nullable: true })
   @CreateDateColumn({

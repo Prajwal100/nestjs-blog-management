@@ -6,6 +6,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -13,6 +14,7 @@ import {
 import * as bcrypt from 'bcrypt';
 import { Role } from 'src/common/enums/role.enum';
 import { BCRYPT_HASH_ROUNDS } from 'src/common/constants';
+import { Post } from 'src/post/entities/post.entity';
 
 @ObjectType()
 @Entity()
@@ -54,6 +56,10 @@ export class User {
     nullable: true,
   })
   updatedAt: Date;
+
+  @Field(() => [Post], { nullable: true })
+  @OneToMany(() => Post, (post) => post.author)
+  posts: Post[];
 
   @BeforeInsert()
   @BeforeUpdate()
