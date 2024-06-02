@@ -3,6 +3,7 @@ import { CategoryService } from './category.service';
 import { Category } from './entities/category.entity';
 import { CreateCategoryInput } from './dto/create-category.input';
 import { UpdateCategoryInput } from './dto/update-category.input';
+import { FileUpload, GraphQLUpload } from 'graphql-upload';
 
 @Resolver(() => Category)
 export class CategoryResolver {
@@ -11,8 +12,10 @@ export class CategoryResolver {
   @Mutation(() => Category)
   createCategory(
     @Args('createCategoryInput') createCategoryInput: CreateCategoryInput,
+    @Args({ name: 'image', type: () => GraphQLUpload, nullable: true })
+    image: FileUpload,
   ) {
-    return this.categoryService.create(createCategoryInput);
+    return this.categoryService.create(createCategoryInput, image);
   }
 
   @Query(() => [Category], { name: 'categories' })
@@ -29,8 +32,10 @@ export class CategoryResolver {
   updateCategory(
     @Args('id', { type: () => Int }) id: number,
     @Args('updateCategoryInput') updateCategoryInput: UpdateCategoryInput,
+    @Args({ name: 'image', type: () => GraphQLUpload, nullable: true })
+    image: FileUpload,
   ) {
-    return this.categoryService.update(id, updateCategoryInput);
+    return this.categoryService.update(id, updateCategoryInput, image);
   }
 
   @Mutation(() => Boolean)

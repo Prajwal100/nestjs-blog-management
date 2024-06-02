@@ -62,8 +62,8 @@ type Mutation {
   updateUser(id: Int!, updateUserInput: UpdateUserInput!): User!
   removeUser(id: Int!): Boolean!
   login(email: String!, password: String!): String!
-  createCategory(createCategoryInput: CreateCategoryInput!): Category!
-  updateCategory(id: Int!, updateCategoryInput: UpdateCategoryInput!): Category!
+  createCategory(createCategoryInput: CreateCategoryInput!, image: Upload): Category!
+  updateCategory(id: Int!, updateCategoryInput: UpdateCategoryInput!, image: Upload): Category!
   removeCategory(id: Int!): Boolean!
   createTag(createTagInput: CreateTagInput!): Tag!
   updateTag(updateTagInput: UpdateTagInput!): Tag!
@@ -97,6 +97,9 @@ input CreateCategoryInput {
   status: STATUS!
   icon: String
 }
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
 
 input UpdateCategoryInput {
   name: String
