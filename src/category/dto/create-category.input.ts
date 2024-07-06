@@ -1,5 +1,5 @@
 import { InputType, Int, Field } from '@nestjs/graphql';
-import { IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
 import { STATUS } from 'src/common/constants';
 
 @InputType()
@@ -12,6 +12,7 @@ export class CreateCategoryInput {
 
   @Field(() => STATUS, { nullable: false })
   @IsNotEmpty()
+  @IsEnum(STATUS)
   status: STATUS;
 
   @Field(() => String, { nullable: true })

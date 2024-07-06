@@ -2,25 +2,13 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type User {
+type Category {
   id: Int!
   name: String!
-  email: String!
-  avatar: String
-  role: String!
-  createdAt: DateTime
-  updatedAt: DateTime
-}
-
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
-
-type Commnet {
-  id: Int!
-  content: String
+  slug: String!
+  icon: String!
   status: STATUS!
+  posts: [Post!]
   createdAt: DateTime
   updatedAt: DateTime
 }
@@ -30,9 +18,19 @@ enum STATUS {
   INACTIVE
 }
 
-type Post {
-  """Example field (placeholder)"""
-  exampleField: Int!
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Comment {
+  id: Int!
+  content: String
+  post: Post
+  user: User
+  status: STATUS!
+  createdAt: DateTime
+  updatedAt: DateTime
 }
 
 type Tag {
@@ -40,18 +38,37 @@ type Tag {
   name: String!
   slug: String!
   status: STATUS!
+  posts: [Post!]
   createdAt: DateTime
   updatedAt: DateTime
 }
 
-type Category {
+type Post {
   id: Int!
   name: String!
   slug: String!
-  icon: String!
+  summary: String!
+  description: String
+  image: String
+  author: User
+  category: Category
+  tags: [Tag!]
+  comments: [Comment!]
   status: STATUS!
   createdAt: DateTime
   updatedAt: DateTime
+}
+
+type User {
+  id: Int!
+  name: String!
+  email: String!
+  avatar: String
+  role: String!
+  createdAt: DateTime
+  updatedAt: DateTime
+  posts: [Post!]
+  comments: [Comment!]
 }
 
 type Query {
@@ -62,7 +79,8 @@ type Query {
   tags: [Tag!]!
   tag(id: Int!): Tag!
   post(id: Int!): Post!
-  commnet(id: Int!): Commnet!
+  comments: [Comment!]!
+  comment(id: Int!): Comment!
 }
 
 type Mutation {
@@ -76,12 +94,12 @@ type Mutation {
   createTag(createTagInput: CreateTagInput!): Tag!
   updateTag(id: Int!, updateTagInput: UpdateTagInput!): Tag!
   removeTag(id: Int!): Boolean!
-  createPost(createPostInput: CreatePostInput!): Post!
-  updatePost(updatePostInput: UpdatePostInput!): Post!
+  createPost(createPostInput: CreatePostInput!, image: Upload): Post!
+  updatePost(updatePostInput: UpdatePostInput!, image: Upload): Post!
   removePost(id: Int!): Post!
-  createCommnet(createCommnetInput: CreateCommnetInput!): Commnet!
-  updateCommnet(updateCommnetInput: UpdateCommnetInput!): Commnet!
-  removeCommnet(id: Int!): Commnet!
+  createComment(createCommentInput: CreateCommentInput!): Comment!
+  updateComment(updateCommentInput: UpdateCommentInput!): Comment!
+  removeComment(id: Int!): Comment!
 }
 
 input CreateUserInput {
@@ -126,23 +144,39 @@ input UpdateTagInput {
 }
 
 input CreatePostInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  """Post name"""
+  name: String!
+  summary: String!
+  description: String
+  authorId: Int
+  categoryId: Int!
+  tagIds: [Int!]
+  status: STATUS!
 }
 
 input UpdatePostInput {
-  """Example field (placeholder)"""
-  exampleField: Int
+  """Post name"""
+  name: String
+  summary: String
+  description: String
+  authorId: Int
+  categoryId: Int
+  tagIds: [Int!]
+  status: STATUS
   id: Int!
 }
 
-input CreateCommnetInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+input CreateCommentInput {
+  content: String
+  postId: Int!
+  userId: Int!
+  status: STATUS
 }
 
-input UpdateCommnetInput {
-  """Example field (placeholder)"""
-  exampleField: Int
+input UpdateCommentInput {
+  content: String
+  postId: Int
+  userId: Int
+  status: STATUS
   id: Int!
 }

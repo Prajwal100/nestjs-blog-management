@@ -15,6 +15,7 @@ import * as bcrypt from 'bcrypt';
 import { Role } from 'src/common/enums/role.enum';
 import { BCRYPT_HASH_ROUNDS } from 'src/common/constants';
 import { Post } from 'src/post/entities/post.entity';
+import { Comment } from 'src/comment/entities/comment.entity';
 
 @ObjectType()
 @Entity()
@@ -60,6 +61,10 @@ export class User {
   @Field(() => [Post], { nullable: true })
   @OneToMany(() => Post, (post) => post.author)
   posts: Post[];
+
+  @Field(() => [Comment], { nullable:true})
+  @OneToMany(()=>Comment, (comment)=> comment.user)
+  comments?: Comment[];
 
   @BeforeInsert()
   @BeforeUpdate()

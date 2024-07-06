@@ -1,11 +1,13 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { Category } from 'src/category/entities/category.entity';
+import { Comment } from 'src/comment/entities/comment.entity';
 import { STATUS } from 'src/common/constants';
 import { Tag } from 'src/tag/entities/tag.entity';
 import { User } from 'src/user/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
+  Entity,
   JoinTable,
   ManyToMany,
   ManyToOne,
@@ -15,6 +17,7 @@ import {
 } from 'typeorm';
 
 @ObjectType()
+@Entity()
 export class Post {
   @Field(() => Int, { nullable: false })
   @PrimaryGeneratedColumn()
@@ -34,15 +37,15 @@ export class Post {
 
   @Field(() => String, { nullable: true })
   @Column({ nullable: true })
-  description: string;
+  description?: string;
 
   @Field(() => String, { nullable: true })
   @Column({ nullable: true })
-  image: string;
+  image?: string;
 
   @Field(() => User, { nullable: true })
   @ManyToOne(() => User, (user) => user.posts)
-  author: User;
+  author?: User;
 
   @Field(() => Category, { nullable: true })
   @ManyToOne(() => Category, (category) => category.posts)
@@ -53,9 +56,9 @@ export class Post {
   @JoinTable()
   tags: Tag[];
 
-  // @Field(()=>[Comment],{nullable:true})
-  // @OneToMany(()=>Comment, comment => comment.post)
-  // comments:Comment[];
+  @Field(()=>[Comment],{nullable:true})
+  @OneToMany(()=>Comment, comment => comment.post)
+  comments?:Comment[];
 
   @Field(() => STATUS)
   @Column({

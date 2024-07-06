@@ -1,19 +1,19 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { STATUS } from 'src/common/constants';
 import { Post } from 'src/post/entities/post.entity';
+import { User } from 'src/user/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
 @ObjectType()
 @Entity()
-export class Commnet {
+export class Comment {
   @Field(() => Int)
   @PrimaryGeneratedColumn()
   id: number;
@@ -22,9 +22,13 @@ export class Commnet {
   @Column()
   content: string;
 
-  // @Field(()=>Post, { nullable:true})
-  // @ManyToOne(() => Post, post => post.comments)
-  // post: Post;
+  @Field(()=>Post, { nullable:true})
+  @ManyToOne(() => Post, post => post.comments)
+  post?: Post;
+
+  @Field(()=> User, { nullable:true})
+  @ManyToOne(()=> User, user => user.comments)
+  user?: User;
 
   @Field(() => STATUS)
   @Column({

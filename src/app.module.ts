@@ -4,12 +4,12 @@ import { AppService } from './app.service';
 import { DatabaseModule } from './database/database.module';
 import { GraphqlModule } from './graphql/graphql.module';
 import { UserModule } from './user/user.module';
-import { CommnetModule } from './commnet/commnet.module';
 import { PostModule } from './post/post.module';
 import { TagModule } from './tag/tag.module';
 import { CategoryModule } from './category/category.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
+import { CommentModule } from './comment/comment.module';
 
 @Module({
   imports: [
@@ -23,7 +23,7 @@ import { ConfigModule } from '@nestjs/config';
     CategoryModule,
     TagModule,
     PostModule,
-    CommnetModule,
+    CommentModule,
   ],
   controllers: [AppController],
   providers: [AppService],
