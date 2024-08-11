@@ -71,6 +71,11 @@ type User {
   comments: [Comment!]
 }
 
+type ResponseDto {
+  status: Boolean!
+  message: String!
+}
+
 type Query {
   users: [User!]!
   user(id: Int!): User!
@@ -90,7 +95,7 @@ type Mutation {
   login(email: String!, password: String!): String!
   createCategory(createCategoryInput: CreateCategoryInput!, image: Upload): Category!
   updateCategory(id: Int!, updateCategoryInput: UpdateCategoryInput!, image: Upload): Category!
-  removeCategory(id: Int!): Boolean!
+  removeCategory(id: Int!): ResponseDto!
   createTag(createTagInput: CreateTagInput!): Tag!
   updateTag(id: Int!, updateTagInput: UpdateTagInput!): Tag!
   removeTag(id: Int!): Boolean!

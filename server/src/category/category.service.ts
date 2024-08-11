@@ -13,6 +13,7 @@ import { join } from 'path';
 import { FileUpload } from 'graphql-upload';
 import { promises as fs } from 'fs';
 import { v4 as uuidv4 } from 'uuid';
+import { ResponseDto } from 'src/common/dtos/response.dto';
 @Injectable()
 export class CategoryService {
   constructor(
@@ -40,7 +41,11 @@ export class CategoryService {
   }
 
   findAll() {
-    return this.categoryRepository.find();
+    return this.categoryRepository.find({
+      order:{
+        createdAt: "DESC"
+      }
+    });
   }
 
   findOne(id: number) {
@@ -69,12 +74,17 @@ export class CategoryService {
     return this.findOne(id);
   }
 
-  async remove(id: number): Promise<void> {
-    const category = this.findOne(id);
+  async remove(id: number): Promise<ResponseDto> {
+    const category = await this.findOne(id);
     if (!category) {
       throw new NotFoundException('Category not found.');
     }
     await this.categoryRepository.delete(id);
+
+    return {
+      status:true,
+      message: "Category removed successfully."
+    };
   }
 
   private async saveImage(image: FileUpload): Promise<string> {

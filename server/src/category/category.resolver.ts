@@ -4,6 +4,7 @@ import { Category } from './entities/category.entity';
 import { CreateCategoryInput } from './dto/create-category.input';
 import { UpdateCategoryInput } from './dto/update-category.input';
 import { FileUpload, GraphQLUpload } from 'graphql-upload';
+import { ResponseDto } from 'src/common/dtos/response.dto';
 
 @Resolver(() => Category)
 export class CategoryResolver {
@@ -38,9 +39,8 @@ export class CategoryResolver {
     return this.categoryService.update(id, updateCategoryInput, image);
   }
 
-  @Mutation(() => Boolean)
+  @Mutation(() => ResponseDto)
   async removeCategory(@Args('id', { type: () => Int }) id: number) {
-    await this.categoryService.remove(id);
-    return true;
+    return this.categoryService.remove(id);
   }
 }
