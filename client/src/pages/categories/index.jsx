@@ -5,7 +5,7 @@ import { DELETE_CATEGORY, GET_CATEGORIES } from '../../graphql/Category';
 import Loader from 'components/Loader';
 import { Button, Chip } from '@mui/material';
 import { PlusCircleOutlined } from '@ant-design/icons';
-import CreateCategoryModal from './create';
+import CreateCategoryModal from './form';
 import { Box } from '@mui/system';
 import { toast } from 'react-toastify';
 import ConfirmDialog from 'components/ConfirmDialog';
@@ -14,32 +14,61 @@ export const CategoriesPage = () => {
   const [removeCategory] = useMutation(DELETE_CATEGORY);
 
   const [addCategory, setAddCategory] = useState(false);
+  const [editCategory, setEditCategory] = useState(null);
   const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
-
+  const [isEdit, setIsEdit] = useState(false);
   const handleOpenConfirmDialog = (id) => {
     setOpenConfirmDialog(true);
   };
 
   const handleCloseConfirmDialog = () => {
     setSelectedRows([]);
+    setEditCategory(null);
+    setIsEdit(false);
     setOpenConfirmDialog(false);
+  };
+
+  const handleCreate = () => {
+    setEditCategory(null);
+    setIsEdit(false);
+    setAddCategory(true);
+  };
+
+  const handleEdit = (category) => {
+    setEditCategory(category);
+    setAddCategory(true);
+    setIsEdit(true);
   };
 
   const handleDelete = async () => {
     try {
-      console.log({selectedRows})
-      await Promise.all(
+      const results = await Promise.all(
         selectedRows.map(async (row) => {
           const id = data.categories[row].id;
-          await removeCategory({
+          const response = await removeCategory({
             variables: {
               id
             }
           });
+
+          return response.data.removeCategory;
         })
       );
-      toast.success('Category deleted successfully.');
+
+      const successfulDeletes = results.filter((result) => result.status === true);
+      const failedDeletes = results.filter((result) => result.status === false);
+
+      if (successfulDeletes.length > 0) {
+        toast.success(`${successfulDeletes.length} category(ies) deleted successfully.`);
+      }
+
+      if (failedDeletes.length > 0) {
+        failedDeletes.forEach((result) => {
+          toast.error(result.message || 'An error occurred while deleting category.');
+        });
+      }
+
       await refetch();
       handleCloseConfirmDialog();
     } catch (error) {
@@ -69,6 +98,16 @@ export const CategoriesPage = () => {
       }
     },
     {
+      name: 'icon',
+      label: 'Icon',
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: (value) =>
+          value ? <img src={value} alt="Category Icon" style={{ width: 50, height: 50, objectFit: 'cover' }} /> : null
+      }
+    },
+    {
       name: 'slug',
       label: 'Slug',
       options: {
@@ -95,19 +134,18 @@ export const CategoriesPage = () => {
         sort: false,
         empty: true,
         customBodyRender: (value, tableMeta, updateValue) => {
+          const category = data.categories[tableMeta.rowIndex];
           return (
             <>
               <Box display="flex" gap={1}>
-                <Button variant="contained" color="primary" className="m-2" onClick="">
+                <Button variant="contained" color="primary" className="m-2" onClick={() => handleEdit(category)}>
                   Edit
                 </Button>
                 <Button
                   variant="contained"
                   color="error"
                   onClick={() => {
-                    setSelectedRows([
-                      [tableMeta.rowIndex]
-                    ])
+                    setSelectedRows([[tableMeta.rowIndex]]);
                     handleOpenConfirmDialog();
                   }}
                 >
@@ -125,6 +163,7 @@ export const CategoriesPage = () => {
     's.n': index + 1,
     name: row.name,
     slug: row.slug,
+    icon: row.icon,
     status: row.status
   }));
 
@@ -141,11 +180,19 @@ export const CategoriesPage = () => {
   };
   return (
     <>
-      <Button variant="outlined" startIcon={<PlusCircleOutlined />} style={{ marginBottom: '20px' }} onClick={() => setAddCategory(true)}>
+      <Button variant="outlined" startIcon={<PlusCircleOutlined />} style={{ marginBottom: '20px' }} onClick={handleCreate}>
         Add Category
       </Button>
       <MUIDataTable title={'Categories List'} data={rows} columns={columns} options={options} />
-      {addCategory && <CreateCategoryModal addCategory={addCategory} setAddCategory={setAddCategory} refetch={refetch} />}
+      {addCategory && (
+        <CreateCategoryModal
+          addCategory={addCategory}
+          setAddCategory={setAddCategory}
+          refetch={refetch}
+          initialData={editCategory}
+          isEdit={isEdit}
+        />
+      )}
 
       {/* CONFIRM DIALOG BOX */}
       <ConfirmDialog

@@ -6,14 +6,15 @@ export const GET_CATEGORIES = gql`
       id
       name
       slug
+      icon
       status
     }
   }
 `;
 
 export const CREATE_CATEGORY = gql`
-  mutation createCategory($createCategoryInput: CreateCategoryInput!) {
-    createCategory(createCategoryInput: $createCategoryInput) {
+  mutation createCategory($createCategoryInput: CreateCategoryInput!, $image:Upload) {
+    createCategory(createCategoryInput: $createCategoryInput, image: $image) {
       id
       name
       slug
@@ -21,6 +22,17 @@ export const CREATE_CATEGORY = gql`
     }
   }
 `;
+
+export const UPDATE_CATEGORY = gql`
+  mutation updateCategory($id:Int!, $updateCategoryInput: UpdateCategoryInput!, $image:Upload) {
+    updateCategory(id:$id,updateCategoryInput: $updateCategoryInput, image: $image) {
+      id
+      name
+      slug
+      status
+    }
+  }
+`
 
 export const DELETE_CATEGORY = gql`
   mutation removeCategory($id: Int!) {

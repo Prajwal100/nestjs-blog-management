@@ -14,11 +14,15 @@ import { FileUpload } from 'graphql-upload';
 import { promises as fs } from 'fs';
 import { v4 as uuidv4 } from 'uuid';
 import { ResponseDto } from 'src/common/dtos/response.dto';
+import { Post } from 'src/post/entities/post.entity';
 @Injectable()
 export class CategoryService {
   constructor(
     @InjectRepository(Category)
     private readonly categoryRepository: Repository<Category>,
+
+    @InjectRepository(Post)
+    private readonly postRepository: Repository<Post>,
   ) {}
   async create(createCategoryInput: CreateCategoryInput, image: FileUpload) {
     let imagePath: string;
@@ -40,12 +44,17 @@ export class CategoryService {
     return await this.categoryRepository.save(newCategory);
   }
 
-  findAll() {
-    return this.categoryRepository.find({
+  async findAll() {
+    const categories = await this.categoryRepository.find({
       order:{
         createdAt: "DESC"
       }
     });
+
+    return categories.map(category=>({
+      ...category,
+      icon: category.icon  ? `http://localhost:5000/uploads/${category.icon}` : null
+    }));
   }
 
   findOne(id: number) {
@@ -61,7 +70,7 @@ export class CategoryService {
     updateCategoryInput: UpdateCategoryInput,
     image?: FileUpload,
   ) {
-    const category = this.findOne(id);
+    const category = await this.findOne(id);
     if (!category) {
       throw new NotFoundException('Category not found.');
     }
@@ -70,8 +79,8 @@ export class CategoryService {
       const imagePath = await this.saveImage(image);
       updateCategoryInput.icon = imagePath;
     }
-    this.categoryRepository.update(id, updateCategoryInput);
-    return this.findOne(id);
+    await this.categoryRepository.update(id, updateCategoryInput);
+    return await this.findOne(id);
   }
 
   async remove(id: number): Promise<ResponseDto> {
@@ -79,6 +88,22 @@ export class CategoryService {
     if (!category) {
       throw new NotFoundException('Category not found.');
     }
+
+    const hasPosts = await this.postRepository.count({
+      where:{
+        category: {
+          id
+        }
+      }
+    })
+
+    if(hasPosts > 0){
+      return {
+        status: false,
+        message: 'Category cannot be deleted because it has associated posts. Please delete the posts first.',
+      }
+    }
+
     await this.categoryRepository.delete(id);
 
     return {

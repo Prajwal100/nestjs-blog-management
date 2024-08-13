@@ -6,7 +6,7 @@ type Category {
   id: Int!
   name: String!
   slug: String!
-  icon: String!
+  icon: String
   status: STATUS!
   posts: [Post!]
   createdAt: DateTime

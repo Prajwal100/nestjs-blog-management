@@ -28,7 +28,7 @@ export class Category {
   @Column({ nullable: false, unique: true })
   slug: string;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true})
   @Column({ nullable: true })
   icon?: string;
 
